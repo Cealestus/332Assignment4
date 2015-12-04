@@ -1,6 +1,3 @@
-// client.c
-
-
 /*
  * ** client.c -- a stream socket client demo
  * */
@@ -17,11 +14,11 @@
 
 #include <arpa/inet.h>
 
-#define PORT "3490" // the port client will be connecting to 
+#define PORT "3490" /* the port client will be connecting to */ 
 
-#define MAXDATASIZE 100 // max number of bytes we can get at once 
+#define MAXDATASIZE 100 /*  max number of bytes we can get at once */
 
-// get sockaddr, IPv4 or IPv6:
+/* get sockaddr, IPv4 or IPv6: */
 void *get_in_addr(struct sockaddr *sa)
  {
      if (sa->sa_family == AF_INET) {
@@ -33,11 +30,16 @@ void *get_in_addr(struct sockaddr *sa)
 
 int main(int argc, char *argv[])
 {
+	char *inputLine;
+	size_t buffer = 128;
+	/* int bytes_read; */
+
 	int sockfd, numbytes;  
 	char buf[MAXDATASIZE];
 	struct addrinfo hints, *servinfo, *p;
 	int rv;
 	char s[INET6_ADDRSTRLEN];
+	
 	if (argc != 2) {
 		fprintf(stderr,"usage: client hostname\n");
 		exit(1);
@@ -50,8 +52,14 @@ int main(int argc, char *argv[])
 		fprintf(stderr, "getaddrinfo: %s\n", gai_strerror(rv));
 		return 1;
 	}
-	// loop through all the results and connect to the first we can
 	
+	inputLine = (char *) malloc (buffer + 1);
+
+	/* use getline to get input from the command line */
+	getline( &inputLine , &buffer  , stdin );
+
+	/* loop through all the results and connect to the first we can */
+
 	for(p = servinfo; p != NULL; p = p->ai_next) {
 		if ((sockfd = socket(p->ai_family, p->ai_socktype,
 						p->ai_protocol)) == -1) {
@@ -73,16 +81,25 @@ int main(int argc, char *argv[])
 		return 2;
 	}
 
+	
 	inet_ntop(p->ai_family, get_in_addr((struct sockaddr *)p->ai_addr),
 			s, sizeof s);
 	printf("client: connecting to %s\n", s);
-	freeaddrinfo(servinfo); // all done with this structure
+	freeaddrinfo(servinfo); /* all done with this structure */
+
+
+
+
+	send( sockfd, inputLine, sizeof inputLine , 0  );
+
+	/*
 	if ((numbytes = recv(sockfd, buf, MAXDATASIZE-1, 0)) == -1) {
 		perror("recv");
 		exit(1);
 	}
 	buf[numbytes] = '\0';
 	printf("client: received '%s'\n",buf);
+	*/
 	close(sockfd);
 	return 0;
 }
