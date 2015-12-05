@@ -89,8 +89,8 @@ int main(int argc, char *argv[])
 		getline( &inputLine , &buffer  , stdin );
 		printf("inputLine is: %s", inputLine);
 		compared = strcmp(inputLine, closeLine);
-		printf("Comparison is: %d", compared);
-		if(compared){
+		printf("Comparison is: %d\n", compared);
+		if(compared == 0){
 			printf("Sender was close, breaking\n");
 			break;
 		}
