@@ -239,7 +239,7 @@ int main(void) {
 		}
 		printf("Peer IP address: %s\n", ipstr);
 		printf("Peer port: %d\n", port);
-		atoi(port, portString, 10);
+		itoa(port, portString, 10);
 		toSend = (char *)malloc(buffer);
 		strcpy(toSend, ipstr);
 		strcat(toSend, portSeparator);
