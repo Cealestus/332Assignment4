@@ -209,6 +209,7 @@ int main(void) {
 	int buffer = 512;
 	int address = 0;
 	int port;
+	char ipstr[INET6_ADDRSTRLEN];
 	size_t num_bytes = 0;
 
 	pthread_t sendAccept;
