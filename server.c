@@ -14,7 +14,8 @@
 #include <sys/wait.h>
 #include <signal.h>
 
-#define PORT "31000"  /* the port users will be connecting to */
+#define INPORT "31000"  /* the port users will be connecting to */
+#define OUTPORT "32000"
 
 #define BACKLOG 10     /* how many pending connections queue will hold */
 
@@ -63,9 +64,9 @@ void sigchld_handler(int s)
 		gethostname(hostname, sizeof hostname);
 		printf("my hostname:  %s\n ", hostname);
 		getaddrinfo(hostname, PORT, &hints, &servinfo);
-		printf("my port: %s\n ", PORT);
+		printf("my port: %s\n ", INPORT);
 
-	        if ((rv = getaddrinfo(NULL, PORT, &hints, &servinfo)) != 0) {
+	        if ((rv = getaddrinfo(NULL, INPORT, &hints, &servinfo)) != 0) {
 	        	fprintf(stderr, "getaddrinfo: %s\n", gai_strerror(rv));
 	                return 1;
 		}
@@ -109,7 +110,51 @@ void sigchld_handler(int s)
 			exit(1);	    
 		}	    
 	    
-		printf("server: waiting for connections...\n");	       
+		printf("server: waiting for connections...\n");
+
+		if ((rv = getaddrinfo(NULL, OUTPORT, &hints, &servinfo)) != 0) {
+		        	fprintf(stderr, "getaddrinfo: %s\n", gai_strerror(rv));
+		                return 1;
+			}
+			/* loop through all the results and bind to the first we can */
+		        for(p = servinfo; p != NULL; p = p->ai_next) {
+				if ((sockfd = socket(p->ai_family, p->ai_socktype, p->ai_protocol)) == -1) {
+					perror("server: socket");
+					continue;
+				}
+
+				if (setsockopt(sockfd, SOL_SOCKET, SO_REUSEADDR, &yes,sizeof(int)) == -1) {
+					perror("setsockopt");
+					exit(1);
+				}
+
+				if (bind(sockfd, p->ai_addr, p->ai_addrlen) == -1) {
+					close(sockfd);
+					perror("server: bind");
+					continue;
+				}
+
+				break;
+			}
+
+			freeaddrinfo(servinfo); /* all done with this structure */
+
+			if (p == NULL)  {
+				fprintf(stderr, "server: failed to bind\n");
+				exit(1);
+			}
+
+			if (listen(sockfd, BACKLOG) == -1) {
+				perror("listen");
+				exit(1);
+			}
+			sa.sa_handler = sigchld_handler; /* reap all dead processes */
+			sigemptyset(&sa.sa_mask);
+			sa.sa_flags = SA_RESTART;
+			if (sigaction(SIGCHLD, &sa, NULL) == -1) {
+				perror("sigaction");
+				exit(1);
+			}
 		
 		
 		while(1) { /*  main accept() loop */ 
@@ -128,7 +173,7 @@ void sigchld_handler(int s)
 			printf("server: got connection from %s\n", s);	    	    
 			if (!fork()) { /* this is the child process */
 				/* close(sockfd);  child doesn't need the listener*/ 	    
-			/*	if (send(new_fd, "Hello, world!", 13, 0) == -1)	    
+			/*	if (send(wz2, "Hello, world!", 13, 0) == -1)
 					perror("send");	*/    
 				exit(0);	    
 			}
