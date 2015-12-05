@@ -205,6 +205,8 @@ void sigchld_handler(int s)
 			
 			}
 
+			printf("server received: %s\n", recvLine);
+
 			send(send_fd,recvLine, sizeof recvLine, 0);
 
 			printf("server recieved:  %s\n" , recvLine);		
