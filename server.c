@@ -127,7 +127,7 @@ void sigchld_handler(int s)
 	    
 			printf("server: got connection from %s\n", s);	    	    
 			if (!fork()) { /* this is the child process */
-				close(sockfd); /* child doesn't need the listener*/ 	    
+				/* close(sockfd);  child doesn't need the listener*/ 	    
 			/*	if (send(new_fd, "Hello, world!", 13, 0) == -1)	    
 					perror("send");	*/    
 				exit(0);	    
@@ -138,13 +138,16 @@ void sigchld_handler(int s)
 		
 		
 
-
-		while(num_bytes == 0 || num_bytes == -1 ) {
-			num_bytes = recv(new_fd, recvLine, sizeof recvLine, 0);
+		while(1){
+			while(num_bytes == 0 || num_bytes == -1 ) {
+				num_bytes = recv(new_fd, recvLine, sizeof recvLine, 0);
 			
+			}
+
+			send(sockfd,recvLine, sizeof recvLine, 0);
+
+			printf("server recieved:  %s\n" , recvLine);		
 		}
-		printf("server recieved:  %s\n" , recvLine);		
-		
 		return 0;	    
 	    }
 
