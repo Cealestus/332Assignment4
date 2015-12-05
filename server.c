@@ -239,7 +239,6 @@ int main(void) {
 		printf("Peer port: %d\n", port);
 		strcpy(toSend, "IP Address: ");
 		strcat(toSend, ipstr);
-		strcat(toSend, portString);
 		strcat(toSend, recvLine);
 
 		send(send_fd, toSend, buffer, 0);
