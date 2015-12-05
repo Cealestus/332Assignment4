@@ -64,7 +64,7 @@ void *acceptSenders(){
 			ipver = "IPv4";
 		} else{
 			struct sockaddr_in6 *ipv6 = (struct sockaddr_in6 *)p->ai_addr;
-			addr = &(ipv6->sin6_Addr);
+			addr = &(ipv6->sin6_addr);
 			ipver = "IPv6";
 		}
 
