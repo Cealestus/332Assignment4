@@ -76,12 +76,11 @@ int main(int argc, char *argv[])
     freeaddrinfo(servinfo); /*all done with this structure*/
 
     while(1){
-		if ((numbytes = recv(sockfd, buf, MAXDATASIZE-1, 0)) == -1) {
-			perror("recv");
-			exit(1);
-		}
-
-		while(numbytes == 0 || numbytes == -1){
+		while((numbytes = recv(sockfd, buf, MAXDATASIZE-1, 0)) == 0){
+			if (numbytes == -1) {
+				perror("recv");
+				exit(1);
+			}
 		}
 
 		buf[numbytes] = '\0';
