@@ -52,6 +52,7 @@ void *acceptSenders(){
 	hints.ai_family = AF_UNSPEC;
 	hints.ai_socktype = SOCK_STREAM;
 	hints.ai_flags = AI_PASSIVE; /* use my IP */
+	char ipstr[INET6_ADDRSTRLEN];
 
 	for(p = servinfo; p != NULL; p = p->ai_next){
 		void *addr;
