@@ -16,6 +16,8 @@
 
 #define BACKLOG 10     /* how many pending connections queue will hold */
 
+int recvsockfd, sendsockfd, new_fd, send_fd; /* listen on sock_fd, new connection on new_fd */
+
 char hostname[128];
 
 /* get sockaddr, IPv4 or IPv6: */
@@ -37,7 +39,6 @@ void sigchld_handler(int s) {
 }
 
 void *acceptSenders(){
-	int sockfd, new_fd, send_fd; /* listen on sock_fd, new connection on new_fd */
 	struct addrinfo hints, *servinfo, *p;
 	struct sockaddr_storage their_addr; /* connector's address information */
 	socklen_t sin_size;
@@ -61,20 +62,20 @@ void *acceptSenders(){
 	}
 	/* loop through all the results and bind to the first we can */
 	for (p = servinfo; p != NULL; p = p->ai_next) {
-		if ((sockfd = socket(p->ai_family, p->ai_socktype, p->ai_protocol))
+		if ((sendsockfd = socket(p->ai_family, p->ai_socktype, p->ai_protocol))
 				== -1) {
 			perror("server: socket");
 			continue;
 		}
 
-		if (setsockopt(sockfd, SOL_SOCKET, SO_REUSEADDR, &yes, sizeof(int))
+		if (setsockopt(sendsockfd, SOL_SOCKET, SO_REUSEADDR, &yes, sizeof(int))
 				== -1) {
 			perror("setsockopt");
 			exit(1);
 		}
 
-		if (bind(sockfd, p->ai_addr, p->ai_addrlen) == -1) {
-			close(sockfd);
+		if (bind(sendsockfd, p->ai_addr, p->ai_addrlen) == -1) {
+			close(sendsockfd);
 			perror("server: bind");
 			continue;
 		}
@@ -89,7 +90,7 @@ void *acceptSenders(){
 		exit(1);
 	}
 
-	if (listen(sockfd, BACKLOG) == -1) {
+	if (listen(sendsockfd, BACKLOG) == -1) {
 		perror("listen");
 		exit(1);
 	}
@@ -103,7 +104,7 @@ void *acceptSenders(){
 
 	while (1) { /*  main accept() loop */
 		sin_size = sizeof their_addr;
-		new_fd = accept(sockfd, (struct sockaddr *) &their_addr, &sin_size);
+		new_fd = accept(sendsockfd, (struct sockaddr *) &their_addr, &sin_size);
 		if (new_fd == -1) {
 			perror("accept");
 			continue;
@@ -122,26 +123,27 @@ void *acceptSenders(){
 }
 
 void *acceptReceivers(){
+	int rv;
 	if ((rv = getaddrinfo(NULL, OUTPORT, &hints, &servinfo)) != 0) {
 			fprintf(stderr, "getaddrinfo: %s\n", gai_strerror(rv));
 			return 1;
 		}
 		/* loop through all the results and bind to the first we can */
 		for (p = servinfo; p != NULL; p = p->ai_next) {
-			if ((sockfd = socket(p->ai_family, p->ai_socktype, p->ai_protocol))
+			if ((recvsockfd = socket(p->ai_family, p->ai_socktype, p->ai_protocol))
 					== -1) {
 				perror("server: socket");
 				continue;
 			}
 
-			if (setsockopt(sockfd, SOL_SOCKET, SO_REUSEADDR, &yes, sizeof(int))
+			if (setsockopt(recvsockfd, SOL_SOCKET, SO_REUSEADDR, &yes, sizeof(int))
 					== -1) {
 				perror("setsockopt");
 				exit(1);
 			}
 
-			if (bind(sockfd, p->ai_addr, p->ai_addrlen) == -1) {
-				close(sockfd);
+			if (bind(recvsockfd, p->ai_addr, p->ai_addrlen) == -1) {
+				close(recvsockfd);
 				perror("server: bind");
 				continue;
 			}
@@ -156,7 +158,7 @@ void *acceptReceivers(){
 			exit(1);
 		}
 
-		if (listen(sockfd, BACKLOG) == -1) {
+		if (listen(recvsockfd, BACKLOG) == -1) {
 			perror("listen");
 			exit(1);
 		}
@@ -170,7 +172,7 @@ void *acceptReceivers(){
 
 		while (1) { /*  main accept() loop */
 			sin_size = sizeof their_addr;
-			send_fd = accept(sockfd, (struct sockaddr *) &their_addr, &sin_size);
+			send_fd = accept(recvsockfd, (struct sockaddr *) &their_addr, &sin_size);
 			if (send_fd == -1) {
 				perror("accept");
 				continue;
