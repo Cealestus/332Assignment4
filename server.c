@@ -237,7 +237,7 @@ int main(void) {
 		}
 		printf("Peer IP address: %s\n", ipstr);
 		printf("Peer port: %d\n", port);
-		strcpy(toSend, "IP Address: ");
+		/*strcpy(toSend, "IP Address: ");*/
 		/*strcat(toSend, ipstr);*/
 		/*strcat(toSend, recvLine);*/
 
