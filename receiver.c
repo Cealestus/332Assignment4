@@ -75,16 +75,21 @@ int main(int argc, char *argv[]) {
 
 	while (1) {
 		printf("Before receive\n");
+		/*
 		while ((numbytes = recv(sockfd, buf, MAXDATASIZE - 1, 0)) == 0) {
 			if (numbytes == -1) {
 				perror("recv");
 				exit(1);
 			}
+		}*/
+		while(numbytes == 0 || numbytes == -1){
+			numbytes = recv(sockfd, buf, MAXDATASIZE - 1, 0);
 		}
 		printf("After receive\n");
 		buf[numbytes] = '\0';
 		printf("received: %s\n", buf);
 		printf("After printing\n");
+		numbytes = 0;
 	}
 
 	close(sockfd);
