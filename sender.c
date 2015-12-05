@@ -93,6 +93,8 @@ int main(int argc, char *argv[]) {
 			break;
 		}
 
+		printf("About to send: %s\n", inputLine);
+
 		send(sockfd, inputLine, sizeof inputLine, 0);
 		free(inputLine);
 	}
