@@ -63,7 +63,7 @@ void sigchld_handler(int s)
 		
 		gethostname(hostname, sizeof hostname);
 		printf("my hostname:  %s\n ", hostname);
-		getaddrinfo(hostname, PORT, &hints, &servinfo);
+		getaddrinfo(hostname, INPORT, &hints, &servinfo);
 		printf("my port: %s\n ", INPORT);
 
 	        if ((rv = getaddrinfo(NULL, INPORT, &hints, &servinfo)) != 0) {
