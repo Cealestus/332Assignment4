@@ -204,10 +204,11 @@ void *acceptReceivers(){
 
 int main(void) {
 	char *recvLine;
-	struct sockaddr *addr;
-	socklen_t *addrlen = 20;
+	struct sockaddr_storage addr;
+	socklen_t addrlen;
 	int buffer = 512;
 	int address = 0;
+	int port;
 	size_t num_bytes = 0;
 
 	pthread_t sendAccept;
@@ -221,8 +222,19 @@ int main(void) {
 		while (num_bytes == 0 || num_bytes == -1) {
 			num_bytes = recv(new_fd, recvLine, buffer, 0);
 		}
-		address = gepeername(sendsockfd, addr, addrlen);
-		printf("IP address is: %d", address);
+		addrlen = sizeof(addr);
+		gepeername(sendsockfd, (struct sockaddr*)&addr, &addrlen);
+		if(addr.ss_family == AF_INET){
+			struct sockaddr_in *s = (struct sockaddr_in *)&addr;
+			port = ntohs(s->sin_port);
+			inet_ntop(AF_INET, &s->sin_addr, ipstr, sizeof ipstr);
+		} else{
+			struct sockaddr_in6 *s = (struct sockaddr_in6 *)&addr;
+			port = ntohs(s->sin6_port);
+			inet_ntop(AF_INET6, &s->sin6_addr, ipstr, sizeof ipster);
+		}
+		printf("Peer IP address: %s\n", ipstr);
+		printf("Peer port: %d\n", port);
 		send(send_fd, recvLine, buffer, 0);
 
 		num_bytes = 0;
