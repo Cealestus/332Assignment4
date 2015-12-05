@@ -28,7 +28,7 @@ void *get_in_addr(struct sockaddr *sa) {
 int main(int argc, char *argv[]) {
 	char *inputLine;
 	char *closeLine = "close";
-	size_t buffer = 128;
+	size_t buffer = 512;
 	ssize_t chars;
 	/* int bytes_read; */
 
@@ -93,7 +93,10 @@ int main(int argc, char *argv[]) {
 			break;
 		}
 
-		send(sockfd, inputLine, sizeof inputLine, 0);
+		printf("About to send: %s\n", inputLine);
+
+		send(sockfd, inputLine, sizeof(inputLine), 0);
+		free(inputLine);
 	}
 	close(sockfd);
 	return 0;
