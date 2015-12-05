@@ -33,6 +33,7 @@ int main(int argc, char *argv[])
 	size_t buffer = 128;
 	/* int bytes_read; */
 
+	int compared;
 	int sockfd, numbytes;  
 	char buf[MAXDATASIZE];
 	struct addrinfo hints, *servinfo, *p;
@@ -87,7 +88,9 @@ int main(int argc, char *argv[])
 		/* use getline to get input from the command line */
 		getline( &inputLine , &buffer  , stdin );
 		printf("inputLine is: %s", inputLine);
-		if(strcmp(inputLine, closeLine) == 0){
+		compared = strcmp(inputLine, closeLine);
+		printf("Comparison is: %d", compared);
+		if(compared){
 			printf("Sender was close, breaking\n");
 			break;
 		}
