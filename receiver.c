@@ -81,7 +81,7 @@ int main(int argc, char *argv[]) {
 			}
 		}
 		buf[MAXDATASIZE] = '\0';
-		printf("received: %s\n", buf);
+		printf("%s\n", buf);
 	}
 
 	close(sockfd);
