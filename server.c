@@ -41,6 +41,7 @@ void sigchld_handler(int s) {
 }
 
 void *acceptSenders(){
+	printf("Starting acceptSenders thread\n");
 	struct addrinfo hints, *servinfo, *p;
 	struct sockaddr_storage their_addr; /* connector's address information */
 	socklen_t sin_size;
@@ -124,6 +125,7 @@ void *acceptSenders(){
 }
 
 void *acceptReceivers(){
+	printf("Starting acceptReceivers thread\n");
 	int rv;
 	struct addrinfo hints, *servinfo, *p;
 	struct sigaction sa;
@@ -213,7 +215,7 @@ int main(void) {
 		while (num_bytes == 0 || num_bytes == -1) {
 			num_bytes = recv(new_fd, recvLine, buffer, 0);
 		}
-		printf("Received number of bytes: %zu", num_bytes);
+		printf("Received number of bytes: %zu\n", num_bytes);
 		printf("About to send: %s\n", recvLine);
 		send(send_fd, recvLine, buffer, 0);
 		printf("After sending\n");
