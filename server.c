@@ -207,7 +207,6 @@ int main(void) {
 	struct sockaddr_storage addr;
 	socklen_t addrlen;
 	int buffer = 512;
-	int address = 0;
 	int port;
 	char ipstr[INET6_ADDRSTRLEN];
 	size_t num_bytes = 0;
@@ -232,7 +231,7 @@ int main(void) {
 		} else{
 			struct sockaddr_in6 *s = (struct sockaddr_in6 *)&addr;
 			port = ntohs(s->sin6_port);
-			inet_ntop(AF_INET6, &s->sin6_addr, ipstr, sizeof ipster);
+			inet_ntop(AF_INET6, &s->sin6_addr, ipstr, sizeof ipstr);
 		}
 		printf("Peer IP address: %s\n", ipstr);
 		printf("Peer port: %d\n", port);
