@@ -204,8 +204,8 @@ int main(void) {
 	pthread_t sendAccept;
 	pthread_t receiveAccept;
 
-	pthread_create(&sendAccept, NULL, acceptSenders, void);
-	pthread_create(&receiveAccept, NULL, acceptReceivers, void);
+	pthread_create(&sendAccept, NULL, acceptSenders, NULL);
+	pthread_create(&receiveAccept, NULL, acceptReceivers, NULL);
 
 	while (1) {
 		recvLine = (char *) malloc(buffer + 1);
