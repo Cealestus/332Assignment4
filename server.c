@@ -37,7 +37,7 @@ void *get_in_addr(struct sockaddr *sa) {
 int main(void) {
 	char hostname[128];
 	char *recvLine;
-	int buffer = 256;
+	int buffer = 512;
 	size_t num_bytes = 0;
 
 	int sockfd, new_fd, send_fd; /* listen on sock_fd, new connection on new_fd */
