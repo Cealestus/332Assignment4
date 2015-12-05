@@ -29,8 +29,9 @@ void *get_in_addr(struct sockaddr *sa)
 int main(int argc, char *argv[])
 {
 	char *inputLine;
-	char *closeLine = "close\n";
+	char *closeLine = "close";
 	size_t buffer = 128;
+	ssize_t chars;
 	/* int bytes_read; */
 
 	int compared;
@@ -86,7 +87,11 @@ int main(int argc, char *argv[])
 		inputLine = (char *) malloc (buffer + 1);
 
 		/* use getline to get input from the command line */
-		getline( &inputLine , &buffer  , stdin );
+		chars = getline( &inputLine , &buffer  , stdin );
+		if((inputLine)[chars - 1] == '\n'){
+			(inputLine)[chars - 1] = '\0';
+			--chars;
+		}
 		printf("inputLine is: %s", inputLine);
 		compared = strcmp(inputLine, closeLine);
 		printf("Comparison is: %d\n", compared);
