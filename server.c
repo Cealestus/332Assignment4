@@ -198,7 +198,7 @@ int main(void) {
 		}
 		printf("Received number of bytes: %zu", num_bytes);
 		printf("About to send: %s\n", recvLine);
-		send(send_fd, recvLine, sizeof(recvLine), 0);
+		send(send_fd, recvLine, buffer, 0);
 		printf("After sending\n");
 
 		num_bytes = 0;
