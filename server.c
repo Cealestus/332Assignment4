@@ -209,7 +209,7 @@ void sigchld_handler(int s)
 
 			send(send_fd,recvLine, sizeof recvLine, 0);
 
-			printf("server recieved:  %s\n" , recvLine);		
+			num_bytes = 0;
 		}
 		return 0;	    
 	    }
