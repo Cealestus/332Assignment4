@@ -204,7 +204,10 @@ void *acceptReceivers(){
 
 int main(void) {
 	char *recvLine;
+	struct sockaddr *addr;
+	socklen_t *addrlen = 20;
 	int buffer = 512;
+	int address = 0;
 	size_t num_bytes = 0;
 
 	pthread_t sendAccept;
@@ -218,6 +221,8 @@ int main(void) {
 		while (num_bytes == 0 || num_bytes == -1) {
 			num_bytes = recv(new_fd, recvLine, buffer, 0);
 		}
+		address = gepeername(sendsockfd, addr, addrlen);
+		printf("IP address is: %d", address);
 		send(send_fd, recvLine, buffer, 0);
 
 		num_bytes = 0;
