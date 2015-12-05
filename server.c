@@ -10,6 +10,7 @@
 #include <arpa/inet.h>
 #include <sys/wait.h>
 #include <signal.h>
+#include <pthread.h>
 
 #define INPORT "31000"  /* the port users will be connecting to */
 #define OUTPORT "32000"
@@ -200,11 +201,11 @@ int main(void) {
 	int buffer = 512;
 	size_t num_bytes = 0;
 
+	pthread_t sendAccept;
+	pthread_t receiveAccept;
 
-
-	printf("server: waiting for connections...\n");
-
-
+	pthread_create(&sendAccept, NULL, acceptSenders, void);
+	pthread_create(&receiveAccept, NULL, acceptReceivers, void);
 
 	while (1) {
 		recvLine = (char *) malloc(buffer + 1);
