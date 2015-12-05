@@ -125,13 +125,17 @@ void *acceptSenders(){
 }
 
 void *acceptReceivers(){
-	printf("Starting acceptReceivers thread\n");
 	int rv;
 	struct addrinfo hints, *servinfo, *p;
 	struct sigaction sa;
 	socklen_t sin_size;
 	struct sockaddr_storage their_addr; /* connector's address information */
 	char s[INET6_ADDRSTRLEN];
+	memset(&hints, 0, sizeof hints);
+	hints.ai_family = AF_UNSPEC;
+	hints.ai_socktype = SOCK_STREAM;
+	hints.ai_flags = AI_PASSIVE; /* use my IP */
+	printf("Starting acceptReceivers thread\n");
 	if ((rv = getaddrinfo(NULL, OUTPORT, &hints, &servinfo)) != 0) {
 			fprintf(stderr, "getaddrinfo: %s\n", gai_strerror(rv));
 			return;
