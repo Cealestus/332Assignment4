@@ -211,7 +211,9 @@ int main(void) {
 	char ipstr[INET6_ADDRSTRLEN];
 	size_t num_bytes = 0;
 	char *toSend = "";
-	char portString[] = ", Port Number: ";
+	char portSeparator[] = ", ";
+	char separator[] = ": ";
+	char portString[5];
 
 	pthread_t sendAccept;
 	pthread_t receiveAccept;
@@ -237,9 +239,12 @@ int main(void) {
 		}
 		printf("Peer IP address: %s\n", ipstr);
 		printf("Peer port: %d\n", port);
+		atoi(port, portString, 10);
 		toSend = (char *)malloc(buffer);
-		strcpy(toSend, "IP Address: ");
-		strcat(toSend, ipstr);
+		strcpy(toSend, ipstr);
+		strcat(toSend, portSeparator);
+		strcat(toSend, portString);
+		strcat(toSend, separator);
 		strcat(toSend, recvLine);
 
 		send(send_fd, toSend, buffer, 0);
