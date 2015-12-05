@@ -18,6 +18,24 @@
 
 char hostname[128];
 
+/* get sockaddr, IPv4 or IPv6: */
+void *get_in_addr(struct sockaddr *sa) {
+	if (sa->sa_family == AF_INET) {
+		return &(((struct sockaddr_in*) sa)->sin_addr);
+	}
+
+	return &(((struct sockaddr_in6*) sa)->sin6_addr);
+}
+
+void sigchld_handler(int s) {
+	/* waitpid() might overwrite errno, so we save and restore it: */
+	int saved_errno = errno;
+
+	while (waitpid(-1, NULL, WNOHANG) > 0)
+		;
+	errno = saved_errno;
+}
+
 void *acceptSenders(){
 	int sockfd, new_fd, send_fd; /* listen on sock_fd, new connection on new_fd */
 	struct addrinfo hints, *servinfo, *p;
@@ -39,7 +57,7 @@ void *acceptSenders(){
 	printf("Receiver Port: %s\n ", OUTPORT);
 	if ((rv = getaddrinfo(NULL, INPORT, &hints, &servinfo)) != 0) {
 		fprintf(stderr, "getaddrinfo: %s\n", gai_strerror(rv));
-		return 1;
+		return;
 	}
 	/* loop through all the results and bind to the first we can */
 	for (p = servinfo; p != NULL; p = p->ai_next) {
@@ -97,7 +115,7 @@ void *acceptSenders(){
 			/* close(sockfd);  child doesn't need the listener*/
 			/*	if (send(wz2, "Hello, world!", 13, 0) == -1)
 			 perror("send");	*/
-			exit(0);
+			return;
 		}
 		break;
 	}
@@ -168,24 +186,6 @@ void *acceptReceivers(){
 			}
 			break;
 		}
-}
-
-void sigchld_handler(int s) {
-	/* waitpid() might overwrite errno, so we save and restore it: */
-	int saved_errno = errno;
-
-	while (waitpid(-1, NULL, WNOHANG) > 0)
-		;
-	errno = saved_errno;
-}
-
-/* get sockaddr, IPv4 or IPv6: */
-void *get_in_addr(struct sockaddr *sa) {
-	if (sa->sa_family == AF_INET) {
-		return &(((struct sockaddr_in*) sa)->sin_addr);
-	}
-
-	return &(((struct sockaddr_in6*) sa)->sin6_addr);
 }
 
 int main(void) {
