@@ -237,8 +237,6 @@ int main(void) {
 			port = ntohs(s->sin6_port);
 			inet_ntop(AF_INET6, &s->sin6_addr, ipstr, sizeof ipstr);
 		}
-		printf("Peer IP address: %s\n", ipstr);
-		printf("Peer port: %d\n", port);
 		snprintf(portString, 5, "%d", port);
 		toSend = (char *)malloc(buffer);
 		strcpy(toSend, ipstr);
