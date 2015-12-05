@@ -211,7 +211,7 @@ int main(void) {
 	char ipstr[INET6_ADDRSTRLEN];
 	size_t num_bytes = 0;
 	char *toSend;
-	char []portString = ", Port Number: ";
+	char portString[] = ", Port Number: ";
 
 	pthread_t sendAccept;
 	pthread_t receiveAccept;
