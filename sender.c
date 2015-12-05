@@ -50,11 +50,6 @@ int main(int argc, char *argv[])
 		fprintf(stderr, "getaddrinfo: %s\n", gai_strerror(rv));
 		return 1;
 	}
-	
-	inputLine = (char *) malloc (buffer + 1);
-
-	/* use getline to get input from the command line */
-	getline( &inputLine , &buffer  , stdin );
 
 	/* loop through all the results and connect to the first we can */
 
@@ -85,19 +80,17 @@ int main(int argc, char *argv[])
 	printf("client: connecting to %s\n", s);
 	freeaddrinfo(servinfo); /* all done with this structure */
 
+	while(1){
+		inputLine = (char *) malloc (buffer + 1);
 
+		/* use getline to get input from the command line */
+		getline( &inputLine , &buffer  , stdin );
+		if(inputLine == "close"){
+			break;
+		}
 
-
-	send( sockfd, inputLine, sizeof inputLine , 0  );
-
-	/*
-	if ((numbytes = recv(sockfd, buf, MAXDATASIZE-1, 0)) == -1) {
-		perror("recv");
-		exit(1);
+		send( sockfd, inputLine, sizeof inputLine , 0  );
 	}
-	buf[numbytes] = '\0';
-	printf("client: received '%s'\n",buf);
-	*/
 	close(sockfd);
 	return 0;
 }
