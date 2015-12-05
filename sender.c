@@ -28,7 +28,6 @@ void *get_in_addr(struct sockaddr *sa)
 
 int main(int argc, char *argv[])
 {
-	char PORT[5];
 	char *inputLine;
 	size_t buffer = 128;
 	/* int bytes_read; */
@@ -43,12 +42,11 @@ int main(int argc, char *argv[])
 		fprintf(stderr,"usage: client hostname\n");
 		exit(1);
 	}
-	PORT = argv[2];
 	memset(&hints, 0, sizeof hints);
 	hints.ai_family = AF_UNSPEC;
 	hints.ai_socktype = SOCK_STREAM;
 
-	if ((rv = getaddrinfo(argv[1], PORT, &hints, &servinfo)) != 0) {
+	if ((rv = getaddrinfo(argv[1], argv[2], &hints, &servinfo)) != 0) {
 		fprintf(stderr, "getaddrinfo: %s\n", gai_strerror(rv));
 		return 1;
 	}
