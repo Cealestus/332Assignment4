@@ -89,11 +89,9 @@ int main(int argc, char *argv[]) {
 			--chars;
 		}
 		if (strcmp(inputLine, closeLine) == 0) {
-			printf("Sender was close, breaking\n");
+			printf("Sender was close, exiting.\n");
 			break;
 		}
-
-		printf("About to send: %s\n", inputLine);
 
 		send(sockfd, inputLine, buffer, 0);
 		free(inputLine);

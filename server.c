@@ -215,14 +215,10 @@ int main(void) {
 
 	while (1) {
 		recvLine = (char *) malloc(buffer + 1);
-		printf("Before the receive check\n");
 		while (num_bytes == 0 || num_bytes == -1) {
 			num_bytes = recv(new_fd, recvLine, buffer, 0);
 		}
-		printf("Received number of bytes: %zu\n", num_bytes);
-		printf("About to send: %s\n", recvLine);
 		send(send_fd, recvLine, buffer, 0);
-		printf("After sending\n");
 
 		num_bytes = 0;
 		free(recvLine);
