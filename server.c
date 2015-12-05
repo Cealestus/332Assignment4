@@ -211,6 +211,7 @@ int main(void) {
 	char ipstr[INET6_ADDRSTRLEN];
 	size_t num_bytes = 0;
 	char *toSend;
+	char []portString = ", Port Number: ";
 
 	pthread_t sendAccept;
 	pthread_t receiveAccept;
@@ -238,7 +239,6 @@ int main(void) {
 		printf("Peer port: %d\n", port);
 		strcpy(toSend, "IP Address: ");
 		strcat(toSend, ipstr);
-		char []portString = ", Port Number: ";
 		strcat(toSend, portString);
 		strcat(toSend, recvLine);
 
