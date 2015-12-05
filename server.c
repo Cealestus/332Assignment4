@@ -201,7 +201,7 @@ int main(void) {
 		printf("After sending\n");
 
 		num_bytes = 0;
-
+		free(recvLine);
 	}
 	return 0;
 }

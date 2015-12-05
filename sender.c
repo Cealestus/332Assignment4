@@ -94,6 +94,7 @@ int main(int argc, char *argv[]) {
 		}
 
 		send(sockfd, inputLine, sizeof inputLine, 0);
+		free(inputLine);
 	}
 	close(sockfd);
 	return 0;
