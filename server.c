@@ -194,8 +194,9 @@ int main(void) {
 		recvLine = (char *) malloc(buffer + 1);
 		printf("Before the receive check\n");
 		while (num_bytes == 0 || num_bytes == -1) {
-			num_bytes = recv(new_fd, recvLine, buffer + 1, 0);
+			num_bytes = recv(new_fd, recvLine, sizeof recvLine, 0);
 		}
+		printf("Received number of bytes: %d", num_bytes);
 		printf("About to send: %s\n", recvLine);
 		send(send_fd, recvLine, sizeof recvLine, 0);
 		printf("After sending\n");
