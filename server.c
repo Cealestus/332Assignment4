@@ -223,7 +223,7 @@ int main(void) {
 			num_bytes = recv(new_fd, recvLine, buffer, 0);
 		}
 		addrlen = sizeof(addr);
-		gepeername(sendsockfd, (struct sockaddr*)&addr, &addrlen);
+		getpeername(sendsockfd, (struct sockaddr*)&addr, &addrlen);
 		if(addr.ss_family == AF_INET){
 			struct sockaddr_in *s = (struct sockaddr_in *)&addr;
 			port = ntohs(s->sin_port);
