@@ -85,7 +85,7 @@ int main(int argc, char *argv[])
 
 		/* use getline to get input from the command line */
 		getline( &inputLine , &buffer  , stdin );
-		if(inputLine == "close"){
+		if(strcmp(inputLine, "close") == 0){
 			break;
 		}
 
