@@ -82,10 +82,11 @@ int main(int argc, char *argv[])
 		}
 
 		while(numbytes == 0 || numbytes == -1){
-			printf("Server received: %s\n", buf);
 		}
 
 		buf[numbytes] = '\0';
+
+		printf("received: '%s'\n",buf);
     }
 
     close(sockfd);
