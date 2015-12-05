@@ -74,17 +74,17 @@ int main(int argc, char *argv[]) {
 	freeaddrinfo(servinfo); /*all done with this structure*/
 
 	while (1) {
-		printf("Before receive");
+		printf("Before receive\n");
 		while ((numbytes = recv(sockfd, buf, MAXDATASIZE - 1, 0)) == 0) {
 			if (numbytes == -1) {
 				perror("recv");
 				exit(1);
 			}
 		}
-		printf("After receive");
+		printf("After receive\n");
 		buf[numbytes] = '\0';
 		printf("received: %s\n", buf);
-		printf("After printing");
+		printf("After printing\n");
 	}
 
 	close(sockfd);
