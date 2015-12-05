@@ -80,7 +80,7 @@ int main(int argc, char *argv[])
         exit(1);
     }
 
-    while(num_bytes == 0 || num_bytes == -1){
+    while(numbytes == 0 || numbytes == -1){
     	printf("Server received: %s\n", buf);
     }
 
