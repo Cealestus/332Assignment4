@@ -56,8 +56,8 @@ int main(void) {
 	gethostname(hostname, sizeof hostname);
 	printf("my hostname:  %s\n ", hostname);
 	getaddrinfo(hostname, INPORT, &hints, &servinfo);
-	printf("my port: %s\n ", INPORT);
-
+	printf("Sender Port: %s\n ", INPORT);
+	printf("Receiver Port: %s\n " , OUTPORT);
 	if ((rv = getaddrinfo(NULL, INPORT, &hints, &servinfo)) != 0) {
 		fprintf(stderr, "getaddrinfo: %s\n", gai_strerror(rv));
 		return 1;
