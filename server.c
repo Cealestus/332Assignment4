@@ -36,8 +36,8 @@ void *get_in_addr(struct sockaddr *sa) {
 
 int main(void) {
 	char hostname[128];
-	char recvLine[128];
-	size_t buffer = 128;
+	char *recvLine;
+	int buffer = 256;
 	size_t num_bytes = 0;
 
 	int sockfd, new_fd, send_fd; /* listen on sock_fd, new connection on new_fd */
@@ -191,6 +191,7 @@ int main(void) {
 	}
 
 	while (1) {
+		recvLine = (char *) malloc(buffer + 1);
 		printf("Before the receive check\n");
 		while (num_bytes == 0 || num_bytes == -1) {
 			num_bytes = recv(new_fd, recvLine, sizeof recvLine, 0);
@@ -200,6 +201,7 @@ int main(void) {
 		printf("After sending\n");
 
 		num_bytes = 0;
+
 	}
 	return 0;
 }
