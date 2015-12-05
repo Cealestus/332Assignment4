@@ -29,6 +29,7 @@ void *get_in_addr(struct sockaddr *sa)
 int main(int argc, char *argv[])
 {
 	char *inputLine;
+	char *closeLine = "close";
 	size_t buffer = 128;
 	/* int bytes_read; */
 
@@ -86,8 +87,8 @@ int main(int argc, char *argv[])
 		/* use getline to get input from the command line */
 		getline( &inputLine , &buffer  , stdin );
 		printf("inputLine is: %s", inputLine);
-		if(strcmp(inputLine, "close") == 0){
-			printf("Sender was close, breaking");
+		if(strcmp(inputLine, closeLine) == 0){
+			printf("Sender was close, breaking\n");
 			break;
 		}
 
