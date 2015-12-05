@@ -17,6 +17,7 @@
 #define BACKLOG 10     /* how many pending connections queue will hold */
 
 int recvsockfd, sendsockfd, new_fd, send_fd; /* listen on sock_fd, new connection on new_fd */
+int yes = 1;
 
 char hostname[128];
 
@@ -43,7 +44,6 @@ void *acceptSenders(){
 	struct sockaddr_storage their_addr; /* connector's address information */
 	socklen_t sin_size;
 	struct sigaction sa;
-	int yes = 1;
 	char s[INET6_ADDRSTRLEN];
 	int rv;
 	memset(&hints, 0, sizeof hints);
@@ -124,9 +124,14 @@ void *acceptSenders(){
 
 void *acceptReceivers(){
 	int rv;
+	struct addrinfo hints, *servinfo, *p;
+	struct sigaction sa;
+	socklen_t sin_size;
+	struct sockaddr_storage their_addr; /* connector's address information */
+	char s[INET6_ADDRSTRLEN];
 	if ((rv = getaddrinfo(NULL, OUTPORT, &hints, &servinfo)) != 0) {
 			fprintf(stderr, "getaddrinfo: %s\n", gai_strerror(rv));
-			return 1;
+			return;
 		}
 		/* loop through all the results and bind to the first we can */
 		for (p = servinfo; p != NULL; p = p->ai_next) {
