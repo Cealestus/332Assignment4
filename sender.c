@@ -14,7 +14,7 @@
 
 #include <arpa/inet.h>
 
-#define PORT "3490" /* the port client will be connecting to */ 
+#define PORT /* the port client will be connecting to */
 
 #define MAXDATASIZE 100 /*  max number of bytes we can get at once */
 
@@ -40,10 +40,11 @@ int main(int argc, char *argv[])
 	int rv;
 	char s[INET6_ADDRSTRLEN];
 	
-	if (argc != 2) {
+	if (argc != 3) {
 		fprintf(stderr,"usage: client hostname\n");
 		exit(1);
 	}
+	PORT = argv[2];
 	memset(&hints, 0, sizeof hints);
 	hints.ai_family = AF_UNSPEC;
 	hints.ai_socktype = SOCK_STREAM;
