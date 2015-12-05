@@ -17,31 +17,29 @@
 #define MAXDATASIZE 100 /*  max number of bytes we can get at once */
 
 /* get sockaddr, IPv4 or IPv6: */
-void *get_in_addr(struct sockaddr *sa)
- {
-     if (sa->sa_family == AF_INET) {
-             return &(((struct sockaddr_in*)sa)->sin_addr);
-     }
+void *get_in_addr(struct sockaddr *sa) {
+	if (sa->sa_family == AF_INET) {
+		return &(((struct sockaddr_in*) sa)->sin_addr);
+	}
 
-     return &(((struct sockaddr_in6*)sa)->sin6_addr);
- }
+	return &(((struct sockaddr_in6*) sa)->sin6_addr);
+}
 
-int main(int argc, char *argv[])
-{
+int main(int argc, char *argv[]) {
 	char *inputLine;
 	char *closeLine = "close";
 	size_t buffer = 128;
 	ssize_t chars;
 	/* int bytes_read; */
 
-	int sockfd, numbytes;  
+	int sockfd, numbytes;
 	char buf[MAXDATASIZE];
 	struct addrinfo hints, *servinfo, *p;
 	int rv;
 	char s[INET6_ADDRSTRLEN];
-	
+
 	if (argc != 3) {
-		fprintf(stderr,"usage: client hostname\n");
+		fprintf(stderr, "usage: client hostname\n");
 		exit(1);
 	}
 	memset(&hints, 0, sizeof hints);
@@ -55,9 +53,9 @@ int main(int argc, char *argv[])
 
 	/* loop through all the results and connect to the first we can */
 
-	for(p = servinfo; p != NULL; p = p->ai_next) {
-		if ((sockfd = socket(p->ai_family, p->ai_socktype,
-						p->ai_protocol)) == -1) {
+	for (p = servinfo; p != NULL; p = p->ai_next) {
+		if ((sockfd = socket(p->ai_family, p->ai_socktype, p->ai_protocol))
+				== -1) {
 			perror("client: socket");
 			continue;
 		}
@@ -65,8 +63,8 @@ int main(int argc, char *argv[])
 		if (connect(sockfd, p->ai_addr, p->ai_addrlen) == -1) {
 			close(sockfd);
 			perror("client: connect");
-			continue;                                                                                            
-	       	}
+			continue;
+		}
 		break;
 	}
 
@@ -76,30 +74,28 @@ int main(int argc, char *argv[])
 		return 2;
 	}
 
-	
-	inet_ntop(p->ai_family, get_in_addr((struct sockaddr *)p->ai_addr),
-			s, sizeof s);
+	inet_ntop(p->ai_family, get_in_addr((struct sockaddr *) p->ai_addr), s,
+			sizeof s);
 	printf("client: connecting to %s\n", s);
 	freeaddrinfo(servinfo); /* all done with this structure */
 
-	while(1){
-		inputLine = (char *) malloc (buffer + 1);
+	while (1) {
+		inputLine = (char *) malloc(buffer + 1);
 
 		/* use getline to get input from the command line */
-		chars = getline( &inputLine , &buffer  , stdin );
-		if((inputLine)[chars - 1] == '\n'){
+		chars = getline(&inputLine, &buffer, stdin);
+		if ((inputLine)[chars - 1] == '\n') {
 			(inputLine)[chars - 1] = '\0';
 			--chars;
 		}
-		if(strcmp(inputLine, closeLine) == 0){
+		if (strcmp(inputLine, closeLine) == 0) {
 			printf("Sender was close, breaking\n");
 			break;
 		}
 
-		send( sockfd, inputLine, sizeof inputLine , 0  );
+		send(sockfd, inputLine, sizeof inputLine, 0);
 	}
 	close(sockfd);
 	return 0;
 }
-
 
