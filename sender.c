@@ -34,7 +34,6 @@ int main(int argc, char *argv[])
 	ssize_t chars;
 	/* int bytes_read; */
 
-	int compared;
 	int sockfd, numbytes;  
 	char buf[MAXDATASIZE];
 	struct addrinfo hints, *servinfo, *p;
@@ -92,10 +91,7 @@ int main(int argc, char *argv[])
 			(inputLine)[chars - 1] = '\0';
 			--chars;
 		}
-		printf("inputLine is: %s", inputLine);
-		compared = strcmp(inputLine, closeLine);
-		printf("Comparison is: %d\n", compared);
-		if(compared == 0){
+		if(strcmp(inputLine, closeLine) == 0){
 			printf("Sender was close, breaking\n");
 			break;
 		}
