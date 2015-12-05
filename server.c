@@ -239,8 +239,8 @@ int main(void) {
 		printf("Peer port: %d\n", port);
 		toSend = (char *)malloc(buffer);
 		strcpy(toSend, "IP Address: ");
-		/*strcat(toSend, ipstr);*/
-		/*strcat(toSend, recvLine);*/
+		strcat(toSend, ipstr);
+		strcat(toSend, recvLine);
 
 		send(send_fd, toSend, buffer, 0);
 
