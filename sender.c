@@ -28,7 +28,7 @@ void *get_in_addr(struct sockaddr *sa) {
 int main(int argc, char *argv[]) {
 	char *inputLine;
 	char *closeLine = "close";
-	size_t buffer = 128;
+	size_t buffer = 256;
 	ssize_t chars;
 	/* int bytes_read; */
 
