@@ -196,7 +196,7 @@ int main(void) {
 		while (num_bytes == 0 || num_bytes == -1) {
 			num_bytes = recv(new_fd, recvLine, sizeof recvLine, 0);
 		}
-		printf("About to send\n");
+		printf("About to send: %s\n", recvLine);
 		send(send_fd, recvLine, sizeof recvLine, 0);
 		printf("After sending\n");
 
