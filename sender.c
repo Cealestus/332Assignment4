@@ -95,7 +95,7 @@ int main(int argc, char *argv[]) {
 
 		printf("About to send: %s\n", inputLine);
 
-		send(sockfd, inputLine, sizeof(inputLine), 0);
+		send(sockfd, inputLine, buffer, 0);
 		free(inputLine);
 	}
 	close(sockfd);
