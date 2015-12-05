@@ -85,7 +85,7 @@ int main(int argc, char *argv[])
 
 		/* use getline to get input from the command line */
 		getline( &inputLine , &buffer  , stdin );
-		if(strcmp(inputLine, "close") == 0){
+		if(strcmp(&inputLine, "close") == 0){
 			printf("Sender was close, breaking");
 			break;
 		}
