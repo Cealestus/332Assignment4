@@ -47,7 +47,7 @@ void sigchld_handler(int s)
 		size_t buffer= 128;
 		size_t num_bytes=0;
 
-	    	int sockfd, new_fd;  /* listen on sock_fd, new connection on new_fd */
+	    	int sockfd, new_fd, send_fd;  /* listen on sock_fd, new connection on new_fd */
 	        struct addrinfo hints, *servinfo, *p;
 	        struct sockaddr_storage their_addr; /* connector's address information */
 	        socklen_t sin_size;
@@ -90,25 +90,45 @@ void sigchld_handler(int s)
 	    	    
 			break;	    
 		}
-	    	   
+
 		freeaddrinfo(servinfo); /* all done with this structure */
-	    	    
-		if (p == NULL)  {	    
-			fprintf(stderr, "server: failed to bind\n");	    
-			exit(1);	    
+
+		if (p == NULL)  {
+			fprintf(stderr, "server: failed to bind\n");
+			exit(1);
 		}
-	    	    
-		if (listen(sockfd, BACKLOG) == -1) {	    
-			perror("listen");	    
-			exit(1);	   
-		}	    	    
-		sa.sa_handler = sigchld_handler; /* reap all dead processes */	    
-		sigemptyset(&sa.sa_mask);	    
-		sa.sa_flags = SA_RESTART;	    
-		if (sigaction(SIGCHLD, &sa, NULL) == -1) {	    
-			perror("sigaction");	    
-			exit(1);	    
-		}	    
+
+		if (listen(sockfd, BACKLOG) == -1) {
+			perror("listen");
+			exit(1);
+		}
+		sa.sa_handler = sigchld_handler; /* reap all dead processes */
+		sigemptyset(&sa.sa_mask);
+		sa.sa_flags = SA_RESTART;
+		if (sigaction(SIGCHLD, &sa, NULL) == -1) {
+			perror("sigaction");
+			exit(1);
+		}
+
+		while(1) { /*  main accept() loop */
+			sin_size = sizeof their_addr;
+			new_fd = accept(sockfd, (struct sockaddr *)&their_addr, &sin_size);
+			if (new_fd == -1) {
+				perror("accept");
+				continue;
+			}
+			inet_ntop(their_addr.ss_family,
+						get_in_addr((struct sockaddr *)&their_addr),
+						s, sizeof s);
+				printf("server: got connection from %s\n", s);
+			if (!fork()) { /* this is the child process */
+				/* close(sockfd);  child doesn't need the listener*/
+				/*	if (send(wz2, "Hello, world!", 13, 0) == -1)
+					perror("send");	*/
+				exit(0);
+			}
+			break;
+		}
 	    
 		printf("server: waiting for connections...\n");
 
@@ -155,31 +175,27 @@ void sigchld_handler(int s)
 				perror("sigaction");
 				exit(1);
 			}
-		
-		
-		while(1) { /*  main accept() loop */ 
-			sin_size = sizeof their_addr;
-			new_fd = accept(sockfd, (struct sockaddr *)&their_addr, &sin_size);
-			if (new_fd == -1) {
-				perror("accept");
-				continue; 
-			}	    
-			inet_ntop(their_addr.ss_family,
-	    
-					get_in_addr((struct sockaddr *)&their_addr),
-	    
-					s, sizeof s);
-	    
-			printf("server: got connection from %s\n", s);	    	    
-			if (!fork()) { /* this is the child process */
-				/* close(sockfd);  child doesn't need the listener*/ 	    
-			/*	if (send(wz2, "Hello, world!", 13, 0) == -1)
-					perror("send");	*/    
-				exit(0);	    
-			}
-			break;
-		}
 			
+			while(1) { /*  main accept() loop */
+				sin_size = sizeof their_addr;
+				send_fd = accept(sockfd, (struct sockaddr *)&their_addr, &sin_size);
+				if (send_fd == -1) {
+					perror("accept");
+					continue;
+				}
+				inet_ntop(their_addr.ss_family,
+							get_in_addr((struct sockaddr *)&their_addr),
+							s, sizeof s);
+					printf("server: got connection from %s\n", s);
+				if (!fork()) { /* this is the child process */
+					/* close(sockfd);  child doesn't need the listener*/
+					/*	if (send(wz2, "Hello, world!", 13, 0) == -1)
+						perror("send");	*/
+					exit(0);
+				}
+				break;
+			}
+
 		
 		
 
@@ -189,7 +205,7 @@ void sigchld_handler(int s)
 			
 			}
 
-			send(sockfd,recvLine, sizeof recvLine, 0);
+			send(send_fd,recvLine, sizeof recvLine, 0);
 
 			printf("server recieved:  %s\n" , recvLine);		
 		}
